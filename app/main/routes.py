@@ -30,8 +30,8 @@ def index():
 
 @bp.route('/bookings', methods=['GET'])
 def get_bookings():
-    all_bookings = Bookings.query.all()
-    return Bookings_s.dump(all_bookings) #не работает из за слишком большого объёма данных
+    all_bookings = Bookings.query.limit(100).all()
+    return jsonify(Bookings_s.dump(all_bookings))
 
 @bp.route('/aircrafts', methods=['GET'])
 def get_aircrafts():
