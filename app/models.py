@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 from app.point import Point
 from sqlalchemy.dialects.postgresql import CHAR, JSONB, INTEGER, TEXT, NUMERIC, TIMESTAMP, FLOAT
 
@@ -8,6 +8,15 @@ class Aircrafts_data(db.Model):
     model = db.Column(JSONB, nullable=False)
     rrange = db.Column(INTEGER, nullable=False)
 
+    def __init__(self, aircraft_code, model, rrange):
+        self.aircraft_code = aircraft_code
+        self.model = model
+        self.rrange = rrange
+
+class Aircrafts_data_Schema(ma.Schema):
+  class Meta:
+    fields = ('aircraft_code', 'model', 'rrange')
+
 class Airports_data(db.Model):
     __tablename__ = 'airports_data'
     airport_code = db.Column(CHAR(3), nullable=False, primary_key=True)
@@ -15,6 +24,17 @@ class Airports_data(db.Model):
     city = db.Column(JSONB, nullable=False)
     coordinates = db.Column(Point, nullable=False)
     timezone = db.Column(TEXT, nullable=False)
+
+    def __init__(self, airport_code, airport_name, city, coordinates, timezone):
+        self.airport_code = airport_code
+        self.airport_name = airport_name
+        self.city = city
+        self.coordinates = coordinates
+        self.timezone = timezone
+
+class Airports_data_Schema(ma.Schema):
+  class Meta:
+    fields = ('airport_code', 'airport_name', 'city', 'coordinates', 'timezone')
 
 class Boarding_passes(db.Model):
     __tablename__ = 'boarding_passes'
@@ -30,11 +50,30 @@ class Boarding_passes(db.Model):
     boarding_no = db.Column(INTEGER, nullable=False)
     seat_no = db.Column(CHAR(4), nullable=False)
 
+    def __init__(self, ticket_no, flight_id, boarding_no, seat_no):
+        self.ticket_no = ticket_no
+        self.flight_id = flight_id
+        self.boarding_no = boarding_no
+        self.seat_no = seat_no
+
+class Boarding_passes_Schema(ma.Schema):
+  class Meta:
+    fields = ('ticket_no', 'flight_id', 'boarding_no', 'seat_no')
+
 class Bookings(db.Model):
     __tablename__ = 'bookings'
     book_ref = db.Column(CHAR(6), nullable=False, primary_key=True)
     book_date = db.Column(TIMESTAMP, nullable=False)
     total_amount = db.Column(NUMERIC(scale=10, precision=2), nullable=False)
+
+    def __init__(self, book_ref, book_date, total_amount):
+        self.book_ref = book_ref
+        self.book_date = book_date
+        self.total_amount = total_amount
+
+class Bookings_Schema(ma.Schema):
+  class Meta:
+    fields = ('book_ref', 'book_date', 'total_amount')
 
 class Flights(db.Model):
     __tablename__ = 'flights'
@@ -51,6 +90,24 @@ class Flights(db.Model):
     aircraft_code = db.Column(CHAR(3), db.ForeignKey('aircrafts_data.aircraft_code'), nullable=False)
     actual_departure = db.Column(TIMESTAMP, nullable=True)
     actual_arrival = db.Column(TIMESTAMP, nullable=True)
+
+    def __init__(self, flight_id, flight_no, scheduled_departure, scheduled_arrival, departure_airport,
+            arrival_airport, status, aircraft_code, actual_departure, actual_arrival):
+        self.flight_id = flight_id
+        self.flight_no = flight_no
+        self.scheduled_departure = scheduled_departure
+        self.scheduled_arrival = scheduled_arrival
+        self.departure_airport = departure_airport
+        self.arrival_airport = arrival_airport
+        self.status = status
+        self.aircraft_code = aircraft_code
+        self.actual_departure = actual_departure
+        self.actual_arrival = actual_arrival
+
+class Flights_Schema(ma.Schema):
+  class Meta:
+    fields = ('flight_id', 'flight_no', 'scheduled_departure', 'scheduled_arrival', 'departure_airport',
+        'arrival_airport', 'status', 'aircraft_code', 'actual_departure', 'actual_arrival')
     
 class Seats(db.Model):
     __tablename__ = 'seats'
@@ -60,6 +117,15 @@ class Seats(db.Model):
     aircraft_code = db.Column(CHAR(3), nullable=False)
     seat_no = db.Column(CHAR(4), nullable=False)
     fare_conditions = db.Column(CHAR(10), nullable=False)
+    
+    def __init__(self, aircraft_code, seat_no, fare_conditions):
+        self.aircraft_code = aircraft_code
+        self.seat_no = seat_no
+        self.fare_conditions = fare_conditions
+
+class Seats_Schema(ma.Schema):
+  class Meta:
+    fields = ('aircraft_code', 'seat_no', 'fare_conditions')
 
 class Ticket_flights(db.Model):
     __tablename__ = 'ticket_flights'
@@ -67,6 +133,16 @@ class Ticket_flights(db.Model):
     flight_id = db.Column(INTEGER, db.ForeignKey('flights.flight_id'), nullable=False, primary_key=True)
     fare_conditions = db.Column(CHAR(10), nullable=False)
     amount = db.Column(NUMERIC(scale=10, precision=2), nullable=False)
+        
+    def __init__(self, ticket_no, flight_id, fare_conditions, amount):
+        self.ticket_no = ticket_no
+        self.flight_id = flight_id
+        self.fare_conditions = fare_conditions
+        self.amount = amount
+
+class Ticket_flights_Schema(ma.Schema):
+  class Meta:
+    fields = ('ticket_no', 'flight_id', 'fare_conditions', 'amount')
 
 class Tickets(db.Model):
     __tablename__ = 'tickets'
@@ -75,3 +151,14 @@ class Tickets(db.Model):
     passenger_id = db.Column(CHAR(20), nullable=False)
     passenger_name = db.Column(TEXT, nullable=False)
     contact_data = db.Column(JSONB, nullable=True)
+        
+    def __init__(self, ticket_no, book_ref, passenger_id, passenger_name, contact_data):
+        self.ticket_no = ticket_no
+        self.book_ref = book_ref
+        self.passenger_id = passenger_id
+        self.passenger_name = passenger_name
+        self.contact_data = contact_data
+
+class Tickets_Schema(ma.Schema):
+  class Meta:
+    fields = ('ticket_no', 'book_ref', 'passenger_id', 'passenger_name', 'contact_data')
