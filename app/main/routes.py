@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import request, g, jsonify, current_app
+from flask import request, jsonify, current_app
 from app import db
 from app.main import bp
 

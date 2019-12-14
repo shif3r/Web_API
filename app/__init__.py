@@ -17,4 +17,4 @@ def create_app(config_class=Config):
     app.register_blueprint(main_bp) #активация blueprint для ссылок типа url_prefix='/api'
     return app
 
-#from app import models
+from app import models
