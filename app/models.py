@@ -13,10 +13,6 @@ class Aircrafts_data(db.Model):
         self.model = model
         self.rrange = rrange
 
-class Aircrafts_data_Schema(ma.Schema):
-  class Meta:
-    fields = ('aircraft_code', 'model', 'rrange')
-
 class Airports_data(db.Model):
     __tablename__ = 'airports_data'
     airport_code = db.Column(CHAR(3), nullable=False, primary_key=True)
@@ -31,10 +27,6 @@ class Airports_data(db.Model):
         self.city = city
         self.coordinates = coordinates
         self.timezone = timezone
-
-class Airports_data_Schema(ma.Schema):
-  class Meta:
-    fields = ('airport_code', 'airport_name', 'city', 'coordinates', 'timezone')
 
 class Boarding_passes(db.Model):
     __tablename__ = 'boarding_passes'
@@ -56,10 +48,6 @@ class Boarding_passes(db.Model):
         self.boarding_no = boarding_no
         self.seat_no = seat_no
 
-class Boarding_passes_Schema(ma.Schema):
-  class Meta:
-    fields = ('ticket_no', 'flight_id', 'boarding_no', 'seat_no')
-
 class Bookings(db.Model):
     __tablename__ = 'bookings'
     book_ref = db.Column(CHAR(6), nullable=False, primary_key=True)
@@ -70,10 +58,6 @@ class Bookings(db.Model):
         self.book_ref = book_ref
         self.book_date = book_date
         self.total_amount = total_amount
-
-class Bookings_Schema(ma.Schema):
-  class Meta:
-    fields = ('book_ref', 'book_date', 'total_amount')
 
 class Flights(db.Model):
     __tablename__ = 'flights'
@@ -104,11 +88,6 @@ class Flights(db.Model):
         self.actual_departure = actual_departure
         self.actual_arrival = actual_arrival
 
-class Flights_Schema(ma.Schema):
-  class Meta:
-    fields = ('flight_id', 'flight_no', 'scheduled_departure', 'scheduled_arrival', 'departure_airport',
-        'arrival_airport', 'status', 'aircraft_code', 'actual_departure', 'actual_arrival')
-    
 class Seats(db.Model):
     __tablename__ = 'seats'
     __table_args__ = (db.PrimaryKeyConstraint('aircraft_code', 'seat_no', name='boarding_passes_pkey'),
@@ -123,10 +102,6 @@ class Seats(db.Model):
         self.seat_no = seat_no
         self.fare_conditions = fare_conditions
 
-class Seats_Schema(ma.Schema):
-  class Meta:
-    fields = ('aircraft_code', 'seat_no', 'fare_conditions')
-
 class Ticket_flights(db.Model):
     __tablename__ = 'ticket_flights'
     ticket_no = db.Column(CHAR(13), db.ForeignKey('tickets.ticket_no'), nullable=False, primary_key=True)
@@ -139,10 +114,6 @@ class Ticket_flights(db.Model):
         self.flight_id = flight_id
         self.fare_conditions = fare_conditions
         self.amount = amount
-
-class Ticket_flights_Schema(ma.Schema):
-  class Meta:
-    fields = ('ticket_no', 'flight_id', 'fare_conditions', 'amount')
 
 class Tickets(db.Model):
     __tablename__ = 'tickets'
@@ -159,6 +130,35 @@ class Tickets(db.Model):
         self.passenger_name = passenger_name
         self.contact_data = contact_data
 
-class Tickets_Schema(ma.Schema):
+class Aircrafts_data_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('aircraft_code', 'model', 'rrange')
+
+class Airports_data_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('airport_code', 'airport_name', 'city', 'coordinates', 'timezone')
+
+class Boarding_passes_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('ticket_no', 'flight_id', 'boarding_no', 'seat_no')
+
+class Bookings_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('book_ref', 'book_date', 'total_amount')
+
+class Flights_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('flight_id', 'flight_no', 'scheduled_departure', 'scheduled_arrival', 'departure_airport',
+        'arrival_airport', 'status', 'aircraft_code', 'actual_departure', 'actual_arrival')
+
+class Seats_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('aircraft_code', 'seat_no', 'fare_conditions')
+
+class Ticket_flights_Schema(ma.ModelSchema):
+  class Meta:
+    fields = ('ticket_no', 'flight_id', 'fare_conditions', 'amount')
+
+class Tickets_Schema(ma.ModelSchema):
   class Meta:
     fields = ('ticket_no', 'book_ref', 'passenger_id', 'passenger_name', 'contact_data')
