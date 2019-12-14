@@ -18,8 +18,8 @@ def create_app(config_class=Config):
     ma.init_app(app)
     migrate.init_app(app, db)
 
-    from app.main import bp as main_bp
-    app.register_blueprint(main_bp) #активация blueprint для ссылок типа url_prefix='/api'
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp) #активация blueprint для ссылок типа url_prefix='/api'
     return app
 
 from app import models
