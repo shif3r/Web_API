@@ -58,7 +58,7 @@ def add_booking():
     db.session.commit()
     return Booking_s.jsonify(booking)
 
-@bp.route('/bookings/<book_ref>', methods=['DELETE'])
+@bp.route('/bookings/book_ref/<book_ref>', methods=['DELETE'])
 #Delete a row with <book_ref> pk from table 'Booking'
 def delete_booking(book_ref):
     booking = Bookings.query.get(book_ref)
