@@ -5,7 +5,7 @@ from app.models import Aircrafts_data, Aircrafts_data_Schema, Airports_data, Air
     Boarding_passes, Boarding_passes_Schema, Bookings, Bookings_Schema, Flights, Flights_Schema, \
         Seats, Seats_Schema, Ticket_flights, Ticket_flights_Schema, Tickets, Tickets_Schema
 from app.api import bp
-from app.api.errors import error_response
+from app.api.errors import response
 
 #initializing ma.Schemas
 Aircraft_data_s = Aircrafts_data_Schema()
@@ -35,16 +35,18 @@ def get_bookings(count):
     try:
         count = int(count)
     except:
-        return error_response(400)
+        return response(400, 'Type a number!')
     if(type(count) != int or count <= 0):
-        return error_response(404)
+        return response(404, 'Not found')
     all_bookings = Bookings.query.limit(count).all()
     return jsonify(Bookings_s.dump(all_bookings))
 
 @bp.route('/bookings/book_ref/<book_ref>', methods=['GET'])
 #Outputs <book_ref> of table 'Bookings'
 def get_single_bookings(book_ref):
-    booking = Bookings.query.get_or_404(book_ref)
+    booking = Bookings.query.get(book_ref)
+    if not booking:
+        return response(404, 'Not found')
     return jsonify(Booking_s.dump(booking))
 
 @bp.route('/bookings', methods=['POST'])
